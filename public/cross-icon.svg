@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="16px" viewBox="0 0 18 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Cross Icon Small</title>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+        <g id="Single-colour-checker---2" transform="translate(-1048, -929)" stroke="#D50000" stroke-width="2">
+            <g id="Cross-Icon-Small" transform="translate(1052, 932)">
+                <line x1="0.12195122" y1="0.125" x2="9.87804878" y2="9.875" id="Line-3"></line>
+                <line x1="0.12195122" y1="0.125" x2="9.87804878" y2="9.875" id="Line-3-Copy" transform="translate(5, 5) scale(-1, 1) translate(-5, -5)"></line>
+            </g>
+        </g>
+    </g>
+</svg>

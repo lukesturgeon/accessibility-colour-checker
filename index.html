@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Colour Checker</title>
+
+    <!-- to test in dev, link to the font from the client website -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://studionoel.co.uk/wp-content/themes/studionoel/assets/css/style.css?ver=1709203117"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        background-color: #303131;
+      }
+
+      .dev-heading {
+        padding-block: 5rem;
+        text-align: center;
+        background-color: #3472d8;
+      }
+
+      h2 {
+        color: white;
+      }
+
+      #colour-checker-app,
+      footer {
+        font-family: "GT America", "Helvetica", "Arial", sans-serif;
+        font-weight: 300;
+      }
+
+      footer {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dev-heading">
+      <h2>Accessible brand colour palette checker</h2>
+    </div>
+
+    <div id="colour-checker-app"></div>
+
+    <footer>
+      <p>
+        Our accessibility tool was created in collaboration with Luke Sturgeon.
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

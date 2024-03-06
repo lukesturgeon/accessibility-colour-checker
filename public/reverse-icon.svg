@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="39px" viewBox="0 0 38 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Reverse</title>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Landing-Page" transform="translate(-349, -942)" stroke="#303131" stroke-width="3">
+            <g id="Reverse" transform="translate(354.548, 946)">
+                <g id="Group-7">
+                    <line x1="1.15089514" y1="6.8449103" x2="22.8797954" y2="6.89382334" id="Line" stroke-linecap="square"></line>
+                    <polyline id="Rectangle" transform="translate(19.417, 7.0067) rotate(45) translate(-19.417, -7.0067)" points="14.4625199 2.05220128 24.3714242 2.05220128 24.3714242 11.9611056"></polyline>
+                </g>
+                <g id="Group-7-Copy" transform="translate(13.1795, 23.9933) scale(-1, 1) translate(-13.1795, -23.9933)translate(0.3589, 16.9867)">
+                    <line x1="1.15089514" y1="6.85821717" x2="22.8797954" y2="6.90713022" id="Line" stroke-linecap="square"></line>
+                    <polyline id="Rectangle" transform="translate(18.6344, 7.0067) rotate(45) translate(-18.6344, -7.0067)" points="13.6799461 2.05220128 23.5888504 2.05220128 23.5888504 11.9611056"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
