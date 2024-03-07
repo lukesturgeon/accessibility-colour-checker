@@ -57,6 +57,10 @@ h4 {
   text-align: center;
 }
 
+.preview {
+  transition: all 0.4s ease;
+}
+
 .result {
   /* border: 1px dashed #303131; */
   background-color: white;

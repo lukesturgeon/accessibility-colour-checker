@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from "vue";
 
+import Tooltip from "./Tooltip.vue";
+
 const props = defineProps({
   ratio: Number,
   levelAAA: Boolean,
@@ -40,7 +42,13 @@ const resultColor = computed(() => {
 </script>
 
 <template>
-  <p :style="{ color: resultColor }">{{ ratio.toFixed(2) }} : 1</p>
+  <p :style="{ color: resultColor }">
+    {{ ratio.toFixed(2) }} : 1
+    <Tooltip
+      >This is the explanation text for this help arrow. On desktop it should
+      appear when you hover, on click for mobile and tablet.</Tooltip
+    >
+  </p>
 </template>
 
 <style scoped>
@@ -49,5 +57,6 @@ p {
   font-size: 3rem;
   text-align: center;
   margin-block: 0.5rem;
+  transition: all 0.4s ease;
 }
 </style>

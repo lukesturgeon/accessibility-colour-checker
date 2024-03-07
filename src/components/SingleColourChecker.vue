@@ -7,8 +7,9 @@ import ColorInput from "../components/ColorInput.vue";
 import ContrastResultPreview from "../components/ContrastResultPreview.vue";
 import ContrastResultNum from "../components/ContrastResultNum.vue";
 import ToggleSwitch from "../components/ToggleSwitch.vue";
+import Tooltip from "../components/Tooltip.vue";
 
-const backgroundColor = ref("#ff0000");
+const backgroundColor = ref();
 const foregroundColor = ref();
 const contrastRatio = ref(null);
 const levelAAA = ref(false);
@@ -100,7 +101,14 @@ const largeTextThreshold = computed(() => {
       </div>
 
       <div class="compliance-toggle">
-        <b>Choose WCAG compliance level</b>
+        <b
+          >Choose WCAG compliance level
+          <Tooltip position="right"
+            >This is the explanation text for this help arrow. On desktop it
+            should appear when you hover, on click for mobile and
+            tablet.</Tooltip
+          ></b
+        >
         <ToggleSwitch name="levelAAA" id="levelAAA" v-model="levelAAA" />
       </div>
 
@@ -110,7 +118,7 @@ const largeTextThreshold = computed(() => {
       <h3>{{ levelAAA ? "AAA" : "AA" }} compliance results</h3>
 
       <div v-if="!contrastRatio" class="no-results">
-        <div>
+        <div class="no-results-text">
           <p>🎨</p>
           <p>
             Pick your colours in the panel to the left. Hit check colours, and
@@ -162,34 +170,32 @@ const largeTextThreshold = computed(() => {
 </template>
 <style scoped>
 .page-text {
-  width: 48ch;
+  max-width: 50ch;
   margin-block: 3rem;
   margin-inline: auto;
+  padding-inline: 1rem;
 
   text-align: center;
   color: white;
 }
 .page-content {
-  /* max-width: 1024px; */
   margin-inline: auto;
+  padding-inline: 1rem;
   display: flex;
-
+  flex-direction: column;
   color: black;
 }
 
 .page-colours {
-  width: 40%;
+  border-radius: 0.5rem 0.5rem 0 0;
   padding: 2rem;
-  border-radius: 0.5rem 0 0 0.5rem;
   background-color: white;
 }
 
 .page-colours h3 {
-  margin-bottom: 5.3rem;
-}
-
-h3 {
+  margin-bottom: 1rem;
   text-align: center;
+  /* margin-bottom: 5.3rem; */
 }
 
 .colour-picker-container {
@@ -232,10 +238,13 @@ h6 {
 .page-compliance {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  border-radius: 0 0 0.5rem 0.5rem;
   padding: 2rem;
-  border-radius: 0 0.5rem 0.5rem 0;
   background-color: #f3f3f3;
+}
+
+.page-compliance h3 {
+  text-align: center;
 }
 
 .no-results {
@@ -244,12 +253,40 @@ h6 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding-bottom: 4rem;
 }
 
-.no-results p {
+.no-results .no-results-text {
   width: 75%;
   max-width: 40ch;
   margin-inline: auto;
+}
+
+@media screen and (min-width: 769px) {
+  .page-content {
+    flex-direction: row;
+  }
+  .page-colours {
+    width: 40%;
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+
+  .page-colours .colour-picker-container {
+    margin-top: 5.2rem;
+  }
+
+  .page-compliance {
+    width: 60%;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .page-compliance .no-results {
+    padding-bottom: 4rem;
+  }
+}
+
+@media screen and (min-width: 1056px) {
+  .page-content {
+    padding-inline: 0;
+  }
 }
 </style>
