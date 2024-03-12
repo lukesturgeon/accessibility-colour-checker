@@ -43,6 +43,7 @@ const onInputChange = (event) => {
   } else {
     emit("colorChange", undefined, event.target.value);
     // clear the input
+    event.target.value = "#e9e9e9";
   }
 };
 </script>

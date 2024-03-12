@@ -4,14 +4,13 @@ import Color from "https://colorjs.io/dist/color.js";
 
 import BigButton from "../components/BigButton.vue";
 import PaletteInput from "../components/PaletteInput.vue";
-import ContrastResultPreview from "../components/ContrastResultPreview.vue";
-import ContrastResultNum from "../components/ContrastResultNum.vue";
 import ToggleSwitch from "../components/ToggleSwitch.vue";
 import Tooltip from "../components/Tooltip.vue";
 
 //"#11ac06", "#0ad507", "#cfdd0e"
 const palette = shallowReactive([]);
 const levelAAA = ref(false);
+const showResults = ref(false);
 
 const onChangeColor = (oldColor, newColor) => {
   // update the value in the array because of a change
@@ -30,8 +29,7 @@ const onAddColor = (oldColor, newColor) => {
 };
 
 const checkColors = () => {
-  // check background and foreground are valid
-  console.log("check dem colours");
+  showResults.value = true;
 };
 
 const normalTextThreshold = computed(() => {
@@ -78,22 +76,36 @@ const largeTextThreshold = computed(() => {
 
       <BigButton @click="checkColors">Check colours</BigButton>
     </div>
+
     <div class="page-results">
       <h3>{{ levelAAA ? "AAA" : "AA" }} compliance results</h3>
 
-      <div class="no-results">
+      <div v-if="!showResults" class="no-results">
         <div class="no-results-text">
           <p>🎨</p>
           <p>
             Pick your colours in the panel to the left. Hit check colours, and
             see if your combination will be accessible.
           </p>
-
-          <li v-for="(color, i) in palette" :key="i">
-            {{ color }}
-          </li>
         </div>
       </div>
+
+      <ul v-if="showResults" class="result-list">
+        <li v-for="(backgroundColor, i) in palette" :key="i">
+          <ul>
+            <li v-for="(foregroundColor, ii) in palette" :key="ii">
+              <div
+                class="result-list-item"
+                :style="{ backgroundColor: backgroundColor }"
+              >
+                <span :style="{ color: foregroundColor }">{{
+                  foregroundColor
+                }}</span>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -133,7 +145,8 @@ const largeTextThreshold = computed(() => {
   column-gap: 1rem;
 }
 
-.palette-list {
+.palette-list,
+.page-results .result-list ul {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -147,5 +160,17 @@ const largeTextThreshold = computed(() => {
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 2rem;
   background-color: #f3f3f3;
+}
+
+.page-results .result-list {
+  list-style: none;
+}
+
+.result-list-item {
+  aspect-ratio: 1/1;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
