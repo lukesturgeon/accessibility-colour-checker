@@ -83,7 +83,7 @@ const textColor = computed(() => {
 
 input[type="color"] {
   border: none;
-  background-color: #e9e9e9;
+  background-color: var(--color-checker-light-grey);
   width: 100%;
   block-size: auto;
   aspect-ratio: 1/1;
@@ -95,7 +95,8 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-input[type="color"]::-webkit-color-swatch {
+input[type="color"]::-webkit-color-swatch,
+input[type="color"]::-moz-color-swatch {
   border: none;
 }
 </style>

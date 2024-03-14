@@ -9,7 +9,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["colorChange"]);
+const emit = defineEmits(["colorChange", "colorAdd", "colorRemove"]);
 
 const input = ref(null);
 
@@ -41,15 +41,23 @@ const onInputChange = (event) => {
   if (props.color) {
     emit("colorChange", props.color, event.target.value);
   } else {
-    emit("colorChange", undefined, event.target.value);
+    emit("colorAdd", event.target.value);
     // clear the input
     event.target.value = "#e9e9e9";
   }
+};
+
+const onRemove = () => {
+  emit("colorRemove", props.color);
 };
 </script>
 
 <template>
   <div class="color-input">
+    <button v-if="props.color" class="remove-button" @click="onRemove">
+      <img src="/remove-icon.svg" alt="x icon to remove a colour" />
+    </button>
+
     <img v-show="isEmpty" class="add-icon" src="/add-icon.svg" alt="+ icon" />
 
     <div v-show="!isEmpty" class="hex-label">
@@ -68,6 +76,20 @@ const onInputChange = (event) => {
 <style>
 .color-input {
   position: relative;
+}
+
+.remove-button {
+  position: absolute;
+  top: 0;
+  outline: none;
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+}
+
+.remove-button {
+  right: 0;
+  transform: translate(5px, -5px);
 }
 
 .add-icon {
@@ -91,7 +113,7 @@ const onInputChange = (event) => {
 
 input[type="color"] {
   border: none;
-  background-color: #e9e9e9;
+  background-color: var(--color-checker-light-grey);
   width: 100%;
   block-size: auto;
   aspect-ratio: 1/1;
@@ -105,5 +127,16 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 
 input[type="color"]::-webkit-color-swatch {
   border: none;
+}
+
+@media (hover: hover) {
+  .remove-button {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .color-input:hover .remove-button {
+    opacity: 1;
+  }
 }
 </style>

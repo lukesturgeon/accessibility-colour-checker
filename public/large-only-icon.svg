@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="3px" height="12px" viewBox="0 0 3 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>!</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Result-block-large-only" transform="translate(-15, -138)" fill="#EC7100" fill-rule="nonzero">
+            <g id="!" transform="translate(15.044, 138.4)">
+                <path d="M0.432,7.888 L2.48,7.888 L2.912,0 L0,0 L0.432,7.888 Z M2.848,9.152 L0.064,9.152 L0.064,11.6 L2.848,11.6 L2.848,9.152 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

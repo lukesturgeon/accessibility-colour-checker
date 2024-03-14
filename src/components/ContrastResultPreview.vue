@@ -20,11 +20,11 @@ defineProps({
       </div>
       <div class="result">
         <span v-show="ratio >= threshold"
-          ><img src="/tick-icon.svg" alt="tick icon" />Good contrast</span
+          ><img src="/safe-icon.svg" alt="tick icon" />Good contrast</span
         >
 
         <span v-show="ratio < threshold"
-          ><img src="/cross-icon.svg" alt="cross icon" />Bad contrast</span
+          ><img src="/not-safe-icon.svg" alt="cross icon" />Bad contrast</span
         >
       </div>
     </div>
@@ -62,7 +62,7 @@ h4 {
 }
 
 .result {
-  /* border: 1px dashed #303131; */
+  /* border: 1px dashed var(--color-checker-dark-grey); */
   background-color: white;
 }
 

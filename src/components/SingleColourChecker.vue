@@ -68,11 +68,7 @@ const largeTextThreshold = computed(() => {
 
       <div class="colour-picker-container">
         <div class="colour-picker-input">
-          <label for="backgroundcolor"
-            ><h6>
-              {{ backgroundColor ? "Background" : "Choose background" }}
-            </h6></label
-          >
+          <label for="backgroundcolor"><h4>Background</h4></label>
           <ColorInput
             id="backgroundcolor"
             v-model="backgroundColor"
@@ -87,11 +83,7 @@ const largeTextThreshold = computed(() => {
           />
         </div>
         <div class="colour-picker-input">
-          <label for="foregroundcolor"
-            ><h6>
-              {{ foregroundColor ? "Foreground" : "Choose foreground" }}
-            </h6></label
-          >
+          <label for="foregroundcolor"><h4>Foreground</h4></label>
           <ColorInput
             id="foregroundcolor"
             v-model="foregroundColor"
@@ -101,21 +93,24 @@ const largeTextThreshold = computed(() => {
       </div>
 
       <div class="compliance-toggle">
-        <b
-          >Choose WCAG compliance level
+        <p class="compliance-toggle-text">
+          Choose WCAG compliance level
           <Tooltip position="right"
             >This is the explanation text for this help arrow. On desktop it
             should appear when you hover, on click for mobile and
             tablet.</Tooltip
-          ></b
-        >
-        <ToggleSwitch name="levelAAA" id="levelAAA" v-model="levelAAA" />
+          >
+        </p>
+
+        <div class="compliance-toggle-switch">
+          <ToggleSwitch name="levelAAA" id="levelAAA" v-model="levelAAA" />
+        </div>
       </div>
 
       <BigButton @click="checkColors">Check colours</BigButton>
     </div>
     <div class="page-compliance">
-      <h3>{{ levelAAA ? "AAA" : "AA" }} compliance results</h3>
+      <h3>{{ levelAAA ? "AAA" : "AA" }} compliant results</h3>
 
       <div v-if="!contrastRatio" class="no-results">
         <div class="no-results-text">
@@ -168,6 +163,33 @@ const largeTextThreshold = computed(() => {
     </div>
   </div>
 </template>
+
+<style>
+.page-text {
+  max-width: 50ch;
+  margin-block: 3rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  text-align: center;
+  color: white;
+}
+
+.page-content {
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+@media (min-width: 768px) {
+  .page-content {
+    padding-inline: 1rem;
+  }
+}
+</style>
+
 <style scoped>
 .page-text {
   max-width: 50ch;
@@ -178,24 +200,12 @@ const largeTextThreshold = computed(() => {
   text-align: center;
   color: white;
 }
-.page-content {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  display: flex;
-  flex-direction: column;
-  color: black;
-}
 
 .page-colours {
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 2rem;
+  padding: 1rem;
   background-color: white;
-}
-
-.page-colours h3 {
-  margin-bottom: 1rem;
   text-align: center;
-  /* margin-bottom: 5.3rem; */
 }
 
 .colour-picker-container {
@@ -204,8 +214,10 @@ const largeTextThreshold = computed(() => {
   align-items: center;
 }
 
-h6 {
-  margin-bottom: 0.5rem;
+h4 {
+  font-size: 1rem;
+  line-height: 1rem;
+  font-weight: bold;
 }
 
 .colour-picker-container .colour-picker-input {
@@ -226,20 +238,33 @@ h6 {
 .compliance-toggle {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   column-gap: 1rem;
   margin-bottom: 2rem;
+  text-align: left;
 }
 
-.compliance-toggle > * {
+.compliance-toggle-text {
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  text-wrap: pretty;
+  width: 60%;
+}
+
+.compliance-toggle-switch {
   width: 40%;
 }
+
+/* .compliance-toggle > * {
+  width: 40%;
+} */
 
 .page-compliance {
   display: flex;
   flex-direction: column;
   border-radius: 0 0 0.5rem 0.5rem;
-  padding: 2rem;
+  padding: 1rem;
   background-color: #f3f3f3;
 }
 
@@ -271,7 +296,7 @@ h6 {
   }
 
   .page-colours .colour-picker-container {
-    margin-top: 5.2rem;
+    margin-top: 4.7rem;
   }
 
   .page-compliance {
@@ -281,6 +306,13 @@ h6 {
 
   .page-compliance .no-results {
     padding-bottom: 4rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-colours,
+  .page-compliance {
+    padding: 2rem;
   }
 }
 

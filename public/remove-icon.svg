@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Remove icon</title>
+    <g id="Remove-icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval-Copy" fill="#303131" cx="11" cy="11" r="11"></circle>
+        <g id="Group-3-Copy-12" transform="translate(7, 7)" stroke="#FFFFFF" stroke-linecap="square" stroke-width="2">
+            <line x1="0.0975609756" y1="0.1" x2="7.90243902" y2="7.9" id="Line-3"></line>
+            <line x1="0.0975609756" y1="0.1" x2="7.90243902" y2="7.9" id="Line-3-Copy" transform="translate(4, 4) scale(-1, 1) translate(-4, -4)"></line>
+        </g>
+    </g>
+</svg>

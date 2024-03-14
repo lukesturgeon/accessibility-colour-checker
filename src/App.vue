@@ -53,13 +53,15 @@ const isPaletteActive = computed(() => {
   </div>
 
   <div class="active-component">
-    <component :is="activeComponent"></component>
+    <KeepAlive>
+      <component :is="activeComponent"></component>
+    </KeepAlive>
   </div>
 </template>
 
 <style scoped>
 .bg {
-  background-color: #3472d8;
+  background-color: var(--sn-blue);
 }
 
 nav {
@@ -79,11 +81,11 @@ nav a {
   text-align: center;
 
   color: black;
-  background-color: #99b8eb;
+  background-color: var(--sn-light-blue);
 }
 
 nav a.active {
-  background-color: #303131;
+  background-color: var(--color-checker-dark-grey);
   color: white;
 }
 

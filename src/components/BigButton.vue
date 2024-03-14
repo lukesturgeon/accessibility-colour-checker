@@ -10,7 +10,7 @@ button {
   font-weight: bold;
   font-size: inherit;
   color: white;
-  background-color: #303131;
+  background-color: var(--color-checker-dark-grey);
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
