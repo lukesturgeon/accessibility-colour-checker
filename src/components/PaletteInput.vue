@@ -53,7 +53,7 @@ const onRemove = () => {
 </script>
 
 <template>
-  <div class="color-input">
+  <div class="color-input" :class="{ hidden: !props.color }">
     <button v-if="props.color" class="remove-button" @click="onRemove">
       <img src="/remove-icon.svg" alt="x icon to remove a colour" />
     </button>
@@ -68,7 +68,7 @@ const onRemove = () => {
       type="color"
       ref="input"
       :value="previewColor"
-      @change="onInputChange"
+      @change.lazy="onInputChange"
     />
   </div>
 </template>
@@ -76,6 +76,8 @@ const onRemove = () => {
 <style>
 .color-input {
   position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .remove-button {
@@ -117,8 +119,14 @@ input[type="color"] {
   width: 100%;
   block-size: auto;
   aspect-ratio: 1/1;
-  border-radius: 0.5rem;
-  overflow: hidden;
+}
+
+.color-input.hidden {
+  background-color: var(--color-checker-light-grey);
+  height: min-content;
+}
+.color-input.hidden input[type="color"] {
+  opacity: 0;
 }
 
 input[type="color"]::-webkit-color-swatch-wrapper {

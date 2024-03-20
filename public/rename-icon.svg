@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Rename icon</title>
-    <g id="Rename-icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <circle id="Oval-Copy" fill="#303131" cx="11" cy="11" r="11"></circle>
-        <path d="M3,10 L6,8 L18,8 L18,12 L6,12 L3,10 Z" id="Combined-Shape" fill="#FFFFFF" transform="translate(10.5, 10) rotate(-45) translate(-10.5, -10)"></path>
-        <line x1="5.5" y1="16.5" x2="16.5" y2="16.5" id="Line-2" stroke="#FFFFFF" stroke-linecap="square"></line>
-    </g>
-</svg>

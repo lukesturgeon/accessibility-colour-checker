@@ -1,25 +1,24 @@
 <script setup>
+defineProps(["options"]);
 const model = defineModel();
 </script>
 
 <template>
   <div class="toggle-radio">
-    <label
-      ><input type="radio" id="show-all" value="show-all" v-model="model" />
-      Show all
+    <label v-for="option in options"
+      ><input type="radio" :value="option.value" v-model="model" />
+      {{ option.label }}
     </label>
-
-    <label
-      ><input type="radio" id="show-safe" value="show-safe" v-model="model" />
-      Safe only</label
-    >
   </div>
 </template>
 
 <style scoped>
-div {
+.toggle-radio {
   display: flex;
-  column-gap: 3rem;
+  justify-content: space-between;
+  max-width: 300px;
+  margin-inline: auto;
+  /* column-gap: 3rem; */
 }
 label {
   display: flex;
@@ -36,7 +35,7 @@ input[type="radio"] {
   /* Add if not using autoprefixer */
   -webkit-appearance: none;
   appearance: none;
-  /* For iOS < 15 to remove gradient background */
+  /* For iOS <style 15 to remove gradient background */
   background-color: #fff;
   /* Not removed via appearance */
   margin: 0;
@@ -58,5 +57,14 @@ input[type="radio"]::before {
 
 input[type="radio"]:checked::before {
   transform: scale(1);
+}
+
+@media (min-width: 768px) {
+  .toggle-radio {
+    justify-content: space-between;
+    max-width: unset;
+    margin-inline: unset;
+    column-gap: 3rem;
+  }
 }
 </style>

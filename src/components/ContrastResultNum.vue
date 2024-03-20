@@ -44,10 +44,7 @@ const resultColor = computed(() => {
 <template>
   <p :style="{ color: resultColor }">
     {{ ratio.toFixed(2) }} : 1
-    <Tooltip
-      >This is the explanation text for this help arrow. On desktop it should
-      appear when you hover, on click for mobile and tablet.</Tooltip
-    >
+    <Tooltip href="#how-to-use-our-colour-and-palette-checker"></Tooltip>
   </p>
 </template>
 

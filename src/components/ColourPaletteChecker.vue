@@ -12,7 +12,22 @@ import Tooltip from "../components/Tooltip.vue";
 const palette = shallowReactive([]);
 const levelAAA = ref(false);
 const showResults = ref(false);
-const filterResults = ref("show-all");
+const filterResults = ref("all");
+
+const resultFilterOptions = [
+  {
+    label: "Show all",
+    value: "all",
+  },
+  {
+    label: "Large / Safe",
+    value: "large",
+  },
+  {
+    label: "Safe only",
+    value: "safe",
+  },
+];
 
 const onChangeColor = (oldColor, newColor) => {
   // locate the index of the old hex value
@@ -68,7 +83,12 @@ const resultsMatrix = computed(() => {
         let largeTextThreshold = levelAAA.value ? 4.5 : 3;
 
         // skip this result if we are ONLY showing safe AND this is NOT safe
-        if (filterResults.value == "show-safe" && ratio < normalTextThreshold) {
+        if (filterResults.value == "safe" && ratio < normalTextThreshold) {
+          return;
+        }
+
+        // skip this result if we are ONLY showing LARGE
+        if (filterResults.value == "large" && ratio < largeTextThreshold) {
           return;
         }
 
@@ -100,45 +120,33 @@ const resultsMatrix = computed(() => {
   return matrix;
 });
 
-// const getContrastLabel = (backgroundColor, foregroundColor) => {
-//   let c1 = new Color(backgroundColor);
-//   let c2 = new Color(foregroundColor);
-//   return "Contrast ratio " + c1.contrastWCAG21(c2).toFixed(2) + " : 1";
-// };
+async function downloadPdf() {
+  const url =
+    "https://accessibility-colour-checker.netlify.app/.netlify/functions/make-pdf";
 
-// const getContrastScoreClass = (backgroundColor, foregroundColor) => {
-//   // check contract of colours
-//   let c1 = new Color(backgroundColor);
-//   let c2 = new Color(foregroundColor);
-//   let ratio = c1.contrastWCAG21(c2);
-//   let normalTextThreshold = levelAAA.value ? 7 : 4.5;
-//   let largeTextThreshold = levelAAA.value ? 4.5 : 3;
+  const options = {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ palette: palette, levelAAA: levelAAA.value }),
+  };
 
-//   if (ratio >= normalTextThreshold) {
-//     return "safe";
-//   } else if (ratio >= largeTextThreshold) {
-//     return "large-only";
-//   } else {
-//     return "not-safe";
-//   }
-// };
+  const res = await fetch(url, options);
 
-// const getContrastScore = (backgroundColor, foregroundColor) => {
-//   // check contract of colours
-//   let c1 = new Color(backgroundColor);
-//   let c2 = new Color(foregroundColor);
-//   let ratio = c1.contrastWCAG21(c2);
-//   let normalTextThreshold = levelAAA.value ? 7 : 4.5;
-//   let largeTextThreshold = levelAAA.value ? 4.5 : 3;
+  if (!res.ok) {
+    if (res.status == 406) {
+      alert(
+        "The pdf could not be created, please try again later or get in touch."
+      );
+    }
+    return;
+  }
 
-//   if (ratio >= normalTextThreshold) {
-//     return (levelAAA.value ? "AAA" : "AA") + " Safe";
-//   } else if (ratio >= largeTextThreshold) {
-//     return "Large only";
-//   } else {
-//     return "Not " + (levelAAA.value ? "AAA" : "AA") + " Safe";
-//   }
-// };
+  const blob = await res.blob();
+  var file = window.URL.createObjectURL(blob);
+  window.open(file);
+}
 </script>
 
 <template>
@@ -155,11 +163,9 @@ const resultsMatrix = computed(() => {
         <div class="compliance-toggle">
           <p class="compliance-toggle-text">
             Choose WCAG compliance level
-            <Tooltip position="right"
-              >This is the explanation text for this help arrow. On desktop it
-              should appear when you hover, on click for mobile and
-              tablet.</Tooltip
-            >
+            <Tooltip
+              href="#how-to-use-our-colour-and-palette-checker"
+            ></Tooltip>
           </p>
 
           <div class="compliance-toggle-switch">
@@ -196,7 +202,7 @@ const resultsMatrix = computed(() => {
         <header class="results-header">
           <h3>{{ levelAAA ? "AAA" : "AA" }} compliant results</h3>
 
-          <ToggleRadio v-model="filterResults" />
+          <ToggleRadio v-model="filterResults" :options="resultFilterOptions" />
         </header>
 
         <ul class="result-list">
@@ -211,6 +217,7 @@ const resultsMatrix = computed(() => {
                 v-for="foregroundColor in backgroundColor.results"
                 :key="foregroundColor.color"
                 :class="foregroundColor.result"
+                :title="`Contrast ratio: ` + foregroundColor.ratio.toFixed(2)"
               >
                 <div
                   class="result-list-preview"
@@ -233,6 +240,10 @@ const resultsMatrix = computed(() => {
             </p>
           </li>
         </ul>
+
+        <div class="export">
+          <span>Export palette</span> <a @click="downloadPdf()">.pdf</a>
+        </div>
       </div>
     </div>
   </div>
@@ -246,16 +257,14 @@ const resultsMatrix = computed(() => {
   background-color: white;
 }
 
-@media (min-width: 768px) {
-  .page-colours {
-    padding: 2rem;
-  }
-}
-
 .page-colours-header {
-  display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
+}
+
+.page-colours-header h3 {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .compliance-toggle {
@@ -310,8 +319,13 @@ const resultsMatrix = computed(() => {
 }
 
 .results-header {
-  display: flex;
+  /* display: flex; */
   justify-content: space-between;
+}
+
+.results-header h3 {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .result-list {
@@ -335,10 +349,10 @@ const resultsMatrix = computed(() => {
 
 .result-list-score {
   display: flex;
-  column-gap: 0.5rem;
+  column-gap: 0.25rem;
   background-color: white;
   border-radius: 0 0 0.5rem 0.5rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0 0.25rem 0.3rem;
   font-size: 1rem;
 }
 
@@ -353,7 +367,7 @@ const resultsMatrix = computed(() => {
 }
 
 .large-only .result-list-score::before {
-  margin-left: 2px;
+  padding-left: 4px;
   content: url("/large-only-icon.svg");
 }
 
@@ -362,7 +376,32 @@ const resultsMatrix = computed(() => {
   content: url("/not-safe-icon.svg");
 }
 
+.export {
+  border-top: 2px solid var(--color-checker-dark-grey);
+  padding-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 2rem;
+}
+
+.export a {
+  display: inline-block;
+  background-color: white;
+  padding: 1rem;
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
+  .page-colours {
+    padding: 2rem;
+  }
+
+  .page-colours-header,
+  .results-header {
+    display: flex;
+  }
+
   .palette-list,
   .result-list ul {
     grid-template-columns: repeat(4, 1fr);
@@ -370,6 +409,12 @@ const resultsMatrix = computed(() => {
 }
 
 @media (min-width: 992px) {
+  .page-colours-header h3,
+  .results-header h3 {
+    text-align: left;
+    margin-bottom: unset;
+  }
+
   .palette-list,
   .result-list ul {
     grid-template-columns: repeat(6, 1fr);

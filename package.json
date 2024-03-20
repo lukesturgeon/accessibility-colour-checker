@@ -1,18 +1,24 @@
 {
   "name": "accessibility-colour-checker",
-  "private": true,
   "version": "0.0.0",
+  "license": "UNLICENSED",
+  "private": true,
   "type": "module",
   "scripts": {
+    "netlify": "netlify dev",
+    "functions": "netlify functions:serve",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "colorjs.io": "^0.5.0",
+    "pdfkit": "^0.14.0",
     "vue": "^3.4.19"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
+    "netlify-cli": "^17.19.3",
     "vite": "^5.1.4"
   }
 }

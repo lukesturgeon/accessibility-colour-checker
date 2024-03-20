@@ -52,7 +52,7 @@ const textColor = computed(() => {
       :id="id"
       :name="id"
       :value="previewColor"
-      @change="updateColor"
+      @change.lazy="updateColor"
     />
   </div>
 </template>
