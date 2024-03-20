@@ -7,6 +7,9 @@ const RESULTS_X = 145;
 let levelAAA = false;
 
 export async function handler(event, context, callback) {
+  if (!event.body) {
+  }
+
   let json = JSON.parse(event.body);
 
   if (!json.palette) {
@@ -25,12 +28,9 @@ export async function handler(event, context, callback) {
   const response = {
     statusCode: 200,
     headers: {
-      /* Required for CORS support to work "*.eval.team, eval.team, *localhost*" */
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
-      /* Required for cookies, authorization headers with HTTPS */
-      "Access-Control-Allow-Credentials": true,
-      "Access-Control-Allow-Headers": "*",
+      /* Required for CORS support to work "https://studionoel.co.uk/, *localhost*" */
+      "Access-Control-Allow-Origin": "https://studionoel.co.uk",
+      "Access-Control-Allow-Methods": " POST",
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment;filename=accessible-colour-palette.pdf`,
     },
