@@ -26,9 +26,15 @@ export default async (req, context) => {
 
   // build pdf
   const data = await makePDF(results);
+
+  // Set headers
   const headers = new Headers();
-  headers.append("Access-Control-Allow-Origin", "*");
+  headers.append("Access-Control-Allow-Origin", "https://studionoel.co.uk");
   headers.append("Content-Type", "application/pdf");
+  headers.append(
+    "Content-Disposition",
+    "attachment;filename=accessible-colour-palette.pdf"
+  );
 
   // {
   //     "Access-Control-Allow-Origin": "*",
