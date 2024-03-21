@@ -13,6 +13,7 @@ const palette = shallowReactive([]);
 const levelAAA = ref(false);
 const showResults = ref(false);
 const filterResults = ref("all");
+const downloadBtn = ref(null);
 
 const resultFilterOptions = [
   {
@@ -121,6 +122,8 @@ const resultsMatrix = computed(() => {
 });
 
 async function downloadPdf() {
+  // show loading gif on the button
+  downloadBtn.value.classList.add("loading");
   //https://accessibility-colour-checker.netlify.app
   const url = "/.netlify/functions/make-pdf";
 
@@ -144,6 +147,11 @@ async function downloadPdf() {
       return res.blob();
     })
     .then((blob) => {
+      // reset button
+      // show loading gif on the button
+      downloadBtn.value.classList.remove("loading");
+
+      // open pdf
       var file = window.URL.createObjectURL(blob);
       window.open(file);
     })
@@ -251,7 +259,11 @@ async function downloadPdf() {
         </ul>
 
         <div class="export">
-          <span>Export palette</span> <a @click="downloadPdf()">.pdf</a>
+          <span>Export palette</span>
+          <a class="download-btn" ref="downloadBtn" @click="downloadPdf()"
+            ><span>.pdf</span
+            ><img src="/loading.gif" alt="loading spinner animation"
+          /></a>
         </div>
       </div>
     </div>
@@ -394,11 +406,27 @@ async function downloadPdf() {
   column-gap: 2rem;
 }
 
-.export a {
+.download-btn {
   display: inline-block;
   background-color: white;
   padding: 1rem;
   cursor: pointer;
+  position: relative;
+}
+
+.download-btn img {
+  width: 24px;
+  display: none;
+  position: absolute;
+  left: calc(50% - 12px);
+  top: calc(50% - 12px);
+}
+
+.download-btn.loading img {
+  display: inline;
+}
+.download-btn.loading span {
+  opacity: 0;
 }
 
 @media (min-width: 768px) {
