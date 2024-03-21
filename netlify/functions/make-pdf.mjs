@@ -13,6 +13,9 @@ export default async (req, context) => {
     return new Response("ok", {
       headers: {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTION",
+        "Content-Type": "application/pdf",
       },
     });
   }
