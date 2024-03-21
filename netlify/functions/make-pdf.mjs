@@ -6,40 +6,38 @@ const RESULTS_X = 145;
 
 let levelAAA = false;
 
-export async function handler(event, context, callback) {
-  if (!event.body) {
+export default async (req, context) => {
+  if (req.method != "POST" || !req.body) {
+    return new Response("Use POST to submit your palette", { status: 400 });
   }
 
-  let json = JSON.parse(event.body);
+  const body = await req.json();
 
-  if (!json.palette) {
-    return { statusCode: 406, body: "No palette was received" };
+  if (!body.palette) {
+    return new Response("No palette was received", { status: 400 });
   }
 
-  if (json.levelAAA) {
-    levelAAA = json.levelAAA;
+  if (body.levelAAA) {
+    levelAAA = body.levelAAA;
   }
 
   // get the palette and test
-  const results = getContrastResults(json.palette, levelAAA);
+  const results = getContrastResults(body.palette, levelAAA);
 
   // build pdf
-  const stream = await makePDF(results);
-  const response = {
-    statusCode: 200,
+  const data = await makePDF(results);
+
+  const options = {
     headers: {
-      /* Required for CORS support to work "https://studionoel.co.uk/, *localhost*" */
-      "Access-Control-Allow-Origin": "https://studionoel.co.uk",
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": " POST",
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment;filename=accessible-colour-palette.pdf`,
     },
-    body: stream.toString("base64"),
-    isBase64Encoded: true,
   };
 
-  return response;
-}
+  return new Response(data, options);
+};
 
 const makePDF = async (colors) => {
   return new Promise((resolve) => {
