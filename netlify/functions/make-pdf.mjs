@@ -7,6 +7,16 @@ const RESULTS_X = 145;
 let levelAAA = false;
 
 export default async (req, context) => {
+  // You need this if you are calling this from the browser
+  // to handle CORS preflight stuff
+  if (req.method === "OPTIONS") {
+    return new Response("ok", {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }
+
   if (req.method != "POST" || !req.body) {
     return new Response("Use POST to submit your palette", { status: 400 });
   }
@@ -27,11 +37,13 @@ export default async (req, context) => {
   // build pdf
   const data = await makePDF(results);
 
+  // create a valid response
+
   // Set headers
   const headers = new Headers();
-  headers.append("Access-Control-Allow-Origin", "https://studionoel.co.uk");
-  headers.append("Content-Type", "application/pdf");
-  headers.append(
+  headers.set("Access-Control-Allow-Origin", "*");
+  headers.set("Content-Type", "application/pdf");
+  headers.set(
     "Content-Disposition",
     "attachment;filename=accessible-colour-palette.pdf"
   );

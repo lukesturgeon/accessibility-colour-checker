@@ -121,8 +121,8 @@ const resultsMatrix = computed(() => {
 });
 
 async function downloadPdf() {
-  const url =
-    "https://accessibility-colour-checker.netlify.app/.netlify/functions/make-pdf";
+  //https://accessibility-colour-checker.netlify.app
+  const url = "/.netlify/functions/make-pdf";
 
   const options = {
     method: "POST", // or 'PUT'
@@ -132,20 +132,29 @@ async function downloadPdf() {
     body: JSON.stringify({ palette: palette, levelAAA: levelAAA.value }),
   };
 
-  const res = await fetch(url, options);
+  const res = await fetch(url, options)
+    .then((res) => {
+      if (!res.ok) {
+        alert(
+          "There was a problem creating the pdf, try again later or contact us"
+        );
+        console.warn(res);
+        return;
+      }
+      return res.blob();
+    })
+    .then((blob) => {
+      var file = window.URL.createObjectURL(blob);
+      window.open(file);
+    })
 
-  if (!res.ok) {
-    if (res.status == 406) {
+    .catch((error) => {
       alert(
-        "The pdf could not be created, please try again later or get in touch."
+        "There was a problem creating the pdf, try again later or contact us"
       );
-    }
-    return;
-  }
-
-  const blob = await res.blob();
-  var file = window.URL.createObjectURL(blob);
-  window.open(file);
+      console.warn(error);
+      return;
+    });
 }
 </script>
 
