@@ -26,14 +26,20 @@ export default async (req, context) => {
 
   // build pdf
   const data = await makePDF(results);
+  const headers = new Headers();
+  headers.append("Access-Control-Allow-Origin", "*");
+  headers.append("Content-Type", "application/pdf");
+
+  // {
+  //     "Access-Control-Allow-Origin": "*",
+  //     "Access-Control-Allow-Headers": "Content-Type",
+  //     "Access-Control-Allow-Methods": "GET, POST, OPTION",
+  //     "Content-Type": "application/pdf",
+  //     "Content-Disposition": `attachment;filename=accessible-colour-palette.pdf`,
+  //   }
 
   const options = {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": " POST",
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment;filename=accessible-colour-palette.pdf`,
-    },
+    headers: headers,
   };
 
   return new Response(data, options);
