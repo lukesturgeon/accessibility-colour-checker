@@ -136,7 +136,7 @@ async function downloadPdf() {
   downloadBtn.value.classList.add("loading");
 
   const apiBase = import.meta.env.VITE_API_BASE;
-  const url = apiBase + "/.netlify/functions/make-pdf";
+  const url = apiBase ? apiBase : "" + "/.netlify/functions/make-pdf";
 
   const options = {
     method: "POST", // or 'PUT'
