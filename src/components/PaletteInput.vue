@@ -1,6 +1,8 @@
 <script setup>
-import { ref, computed } from "vue";
+import { computed, onMounted } from "vue";
 import Color from "https://colorjs.io/dist/color.js";
+
+const emit = defineEmits(["colorChange", "colorAdd", "colorRemove"]);
 
 const props = defineProps({
   color: {
@@ -9,12 +11,15 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["colorChange", "colorAdd", "colorRemove"]);
-
-const input = ref(null);
-
 const isEmpty = computed(() => {
   return !props.color;
+});
+
+onMounted(() => {
+  if (!isEmpty) {
+    console.log("because this is new it must set the color " + props.color);
+    // previewColorModel.value = props.color;
+  }
 });
 
 const previewColor = computed(() => {
@@ -37,13 +42,24 @@ const textColor = computed(() => {
   return "black";
 });
 
-const onInputChange = (event) => {
-  if (props.color) {
-    emit("colorChange", props.color, event.target.value);
-  } else {
+const onInput = (event) => {
+  console.log("input");
+  // if (props.color) {
+  //   emit("colorChange", props.color, event.target.value);
+  // } else {
+  //   emit("colorAdd", event.target.value);
+  //   // clear the input
+  //   event.target.value = "#e9e9e9";
+  // }
+};
+
+const onFocusOut = (event) => {
+  if (isEmpty.value) {
     emit("colorAdd", event.target.value);
     // clear the input
     event.target.value = "#e9e9e9";
+  } else {
+    emit("colorChange", props.color, event.target.value);
   }
 };
 
@@ -68,7 +84,8 @@ const onRemove = () => {
       type="color"
       ref="input"
       :value="previewColor"
-      @change.lazy="onInputChange"
+      @input="onInput"
+      @focusout="onFocusOut"
     />
   </div>
 </template>
@@ -76,8 +93,8 @@ const onRemove = () => {
 <style>
 .color-input {
   position: relative;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  /* border-radius: 0.5rem;
+  overflow: hidden; */
 }
 
 .remove-button {
@@ -121,13 +138,13 @@ input[type="color"] {
   aspect-ratio: 1/1;
 }
 
-.color-input.hidden {
+/* .color-input.hidden {
   background-color: var(--color-checker-light-grey);
   height: min-content;
-}
-.color-input.hidden input[type="color"] {
+} */
+/* .color-input.hidden input[type="color"] {
   opacity: 0;
-}
+} */
 
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
@@ -135,6 +152,25 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 
 input[type="color"]::-webkit-color-swatch {
   border: none;
+}
+
+/* show that the current colour is clearly being editted */
+.color-input:focus-within input[type="color"] {
+  border: 2px solid var(--color-checker-dark-grey);
+  animation: border-pulse 2s infinite alternate;
+}
+
+.color-input:focus-within .hex-label {
+  opacity: 0.2;
+}
+
+@keyframes border-pulse {
+  0% {
+    border-color: var(--color-checker-light-grey);
+  }
+  100% {
+    border-color: var(--color-checker-dark-grey);
+  }
 }
 
 @media (hover: hover) {

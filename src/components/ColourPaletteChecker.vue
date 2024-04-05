@@ -62,6 +62,16 @@ const checkColors = () => {
     return;
   }
   showResults.value = true;
+
+  setTimeout(() => {
+    // scroll user down
+    const element = document.getElementById("page-results");
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+  }, 50);
 };
 
 const resultsMatrix = computed(() => {
@@ -124,8 +134,9 @@ const resultsMatrix = computed(() => {
 async function downloadPdf() {
   // show loading gif on the button
   downloadBtn.value.classList.add("loading");
-  //https://accessibility-colour-checker.netlify.app
-  const url = "/.netlify/functions/make-pdf";
+
+  const apiBase = import.meta.env.VITE_API_BASE;
+  const url = apiBase + "/.netlify/functions/make-pdf";
 
   const options = {
     method: "POST", // or 'PUT'
@@ -206,7 +217,7 @@ async function downloadPdf() {
       <BigButton @click="checkColors">Check colours</BigButton>
     </div>
 
-    <div class="page-results">
+    <div class="page-results" id="page-results">
       <div v-if="!showResults" class="no-results">
         <p>🎨</p>
         <p>
@@ -332,8 +343,8 @@ async function downloadPdf() {
 }
 
 .no-results {
-  width: 75%;
-  max-width: 40ch;
+  /* width: 75%; */
+  max-width: 50ch;
   margin-inline: auto;
   padding: 3rem;
   text-align: center;

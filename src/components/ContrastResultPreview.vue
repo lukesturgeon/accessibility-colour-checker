@@ -1,4 +1,6 @@
 <script setup>
+import Tooltip from "./Tooltip.vue";
+
 defineProps({
   heading: String,
   backgroundColor: String,
@@ -10,7 +12,10 @@ defineProps({
 
 <template>
   <div class="contrast-result">
-    <h4>{{ heading }}</h4>
+    <h4>
+      {{ heading }}
+      <Tooltip href="#glossary" />
+    </h4>
     <div class="cols">
       <div
         class="preview"

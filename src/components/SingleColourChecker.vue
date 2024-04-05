@@ -230,11 +230,11 @@ const largeTextThreshold = computed(() => {
   color: black;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .page-content {
     padding-inline: 1rem;
   }
-}
+} */
 </style>
 
 <style scoped>
