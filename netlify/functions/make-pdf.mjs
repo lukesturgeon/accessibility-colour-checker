@@ -3,6 +3,11 @@ import getContrastResults from "../../src/color-checker.js";
 
 const PALETTE_X = 35;
 const RESULTS_X = 145;
+const RESULTS_MAX_COLS = 6;
+const RESULTS_MAX_ROWS = 6;
+const RESULT_SIZE = 60;
+const RESULT_INLINE_SPACING = 72;
+const RESULT_BLOCK_SPACING = 80;
 
 let levelAAA = false;
 
@@ -48,22 +53,12 @@ export default async (req, context) => {
   headers.set("Content-Type", "application/pdf");
   headers.set(
     "Content-Disposition",
-    "attachment;filename=accessible-colour-palette.pdf"
+    "attachment; filename='accessible-colour-palette.pdf'"
   );
 
-  // {
-  //     "Access-Control-Allow-Origin": "*",
-  //     "Access-Control-Allow-Headers": "Content-Type",
-  //     "Access-Control-Allow-Methods": "GET, POST, OPTION",
-  //     "Content-Type": "application/pdf",
-  //     "Content-Disposition": `attachment;filename=accessible-colour-palette.pdf`,
-  //   }
-
-  const options = {
+  return new Response(data, {
     headers: headers,
-  };
-
-  return new Response(data, options);
+  });
 };
 
 const makePDF = async (colors) => {
@@ -96,22 +91,46 @@ const makePDF = async (colors) => {
       "./netlify/functions/fonts/ITC-ClearfaceStd-Regular.otf"
     );
 
-    let num_pages = Math.ceil(colors.length / 6);
+    // this will hold an array of colour results, reorded to fit across pages neatly
+    let pageColorArr = [[]];
+    let pageIndex = 0;
+
+    // start with an empty page and max rows available
+    let rowsAvailableOnPage = RESULTS_MAX_ROWS;
+
+    // go through each color and decided if it fits on 1 page or we shoudl start a next page
+    colors.forEach((c) => {
+      const safeResults = c.results.filter((r) => {
+        return r.result != "not-safe";
+      }).length;
+
+      const rowsNeeded = Math.ceil(safeResults / RESULTS_MAX_COLS);
+
+      if (rowsAvailableOnPage >= rowsNeeded) {
+        // add to existing page
+        pageColorArr[pageIndex].push(c);
+        rowsAvailableOnPage -= rowsNeeded;
+      } else {
+        // start a new page
+        rowsAvailableOnPage = RESULTS_MAX_ROWS;
+        pageIndex++;
+        pageColorArr[pageIndex] = [];
+        pageColorArr[pageIndex].push(c);
+        rowsAvailableOnPage -= rowsNeeded;
+      }
+    });
+
+    // let num_pages = Math.ceil(colors.length / 6);
     let start = 0;
 
-    for (let p = 0; p < num_pages; p++) {
+    for (let p = 0; p < pageColorArr.length; p++) {
       doc.addPage({ size: "A4", margin: 0 });
 
       // HEADER
       addPageHeader(doc);
 
       // CONTENT
-      let remaining = colors.length - start;
-      let end = remaining < 6 ? remaining : 6;
-
-      addPageContent(doc, colors.slice(start, start + end));
-
-      start += end;
+      addPageContent(doc, pageColorArr[p]);
 
       // FOOTER
       addPageFooter(doc);
@@ -202,16 +221,20 @@ function addPageContent(doc, colors) {
   let y = 234;
 
   colors.forEach((color) => {
-    doc.rect(x, y, 60, 60).fill(color.color);
+    doc.rect(x, y, RESULT_SIZE, RESULT_SIZE).fill(color.color);
 
     doc.font("GT-Light");
     doc.fill("#000000");
-    doc.text(color.color, x, y + 60, { width: 60, align: "center" });
+    doc.text(color.color, x, y + RESULT_SIZE, {
+      width: RESULT_SIZE,
+      align: "center",
+    });
 
     // set starting position for results
     x = RESULTS_X;
 
     let num_safe_results = 0;
+    let currentCol = 0;
 
     // add any compliant colours
     color.results.forEach((result) => {
@@ -220,25 +243,32 @@ function addPageContent(doc, colors) {
         return;
       }
 
+      if (currentCol >= RESULTS_MAX_COLS) {
+        currentCol = 0;
+        x = RESULTS_X;
+        y += RESULT_BLOCK_SPACING;
+      }
+
       // background box
-      doc.rect(x, y, 60, 60).fill(color.color);
+      doc.rect(x, y, RESULT_SIZE, RESULT_SIZE).fill(color.color);
       // foreground text
       doc.font("GT-Bold");
       doc.fill(result.color);
       doc.text(result.color, x, y + 22, {
-        width: 60,
+        width: RESULT_SIZE,
         align: "center",
       });
       // compliant result
       doc.font("GT-Light");
       doc.fill("#000000");
-      doc.text(result.label, x, y + 60, {
-        width: 60,
+      doc.text(result.label, x, y + RESULT_SIZE, {
+        width: RESULT_SIZE,
         align: "center",
       });
 
-      x += 72;
+      x += RESULT_INLINE_SPACING;
       num_safe_results++;
+      currentCol++;
     });
 
     if (num_safe_results == 0) {
@@ -254,7 +284,8 @@ function addPageContent(doc, colors) {
     }
 
     // move down on to next row
-    y += 90;
+    y += RESULT_BLOCK_SPACING + 20;
+
     // reset x
     x = PALETTE_X;
   });
