@@ -1,19 +1,27 @@
 <script setup>
 import { ref, shallowReactive, computed } from "vue";
-import Color from "https://colorjs.io/dist/color.js";
-
+import Color from "colorjs.io";
 import BigButton from "../components/BigButton.vue";
-import PaletteInput from "../components/PaletteInput.vue";
+import ColorInput from "../components/ColorInput.vue";
 import ToggleSwitch from "../components/ToggleSwitch.vue";
 import ToggleRadio from "../components/ToggleRadio.vue";
-
 import Tooltip from "../components/Tooltip.vue";
+import ColorEditor from "./ColorEditor.vue";
+import PaletteInput from "./PaletteInput.vue";
 
 const palette = shallowReactive([]);
+const paletteLabels = shallowReactive([]);
+
 const levelAAA = ref(false);
 const showResults = ref(false);
 const filterResults = ref("all");
 const downloadBtn = ref(null);
+
+// For the colour editor panel
+const editColorIndex = ref(-1);
+const editColor = ref();
+const editLabel = ref();
+const arrowPosition = ref();
 
 const resultFilterOptions = [
   {
@@ -30,21 +38,7 @@ const resultFilterOptions = [
   },
 ];
 
-const onChangeColor = (oldColor, newColor) => {
-  // locate the index of the old hex value
-  let i = palette.indexOf(oldColor);
-
-  // if found do an update
-  if (i > -1) {
-    palette.splice(i, 1, newColor);
-  }
-};
-
-const onAddColor = (newColor) => {
-  palette.push(newColor);
-};
-
-const onColorRemove = (oldColor) => {
+const removeColor = (oldColor) => {
   // locate the index of the old hex value
   let i = palette.indexOf(oldColor);
 
@@ -175,6 +169,53 @@ async function downloadPdf() {
       return;
     });
 }
+
+function openNewColor() {
+  const grid = document.getElementById("grid-list");
+  const gridComputedStyle = window.getComputedStyle(grid);
+  const gridColumnCount = gridComputedStyle
+    .getPropertyValue("grid-template-columns")
+    .split(" ").length;
+
+  const gridItemWidth = 98 / gridColumnCount;
+
+  editColorIndex.value = -1;
+  editColor.value = "";
+  arrowPosition.value =
+    gridItemWidth / 2 + gridItemWidth * (palette.length % gridColumnCount);
+}
+
+function openEditColor(c) {
+  editColorIndex.value = palette.indexOf(c);
+  editLabel.value = paletteLabels[editColorIndex.value];
+  editColor.value = c;
+}
+
+function cancelEditColor() {
+  editColor.value = null;
+  editLabel.value = null;
+  arrowPosition.value = null;
+}
+
+function saveColorChanges(newColor) {
+  if (editColorIndex.value == -1) {
+    if (palette.indexOf(newColor) > -1) {
+      alert("You already have '" + newColor + "' in your palette");
+      return;
+    }
+    // add a new colour
+    palette.push(newColor);
+    paletteLabels.push("");
+  } else {
+    // update an existing colour
+    palette[editColorIndex.value] = newColor;
+    paletteLabels[editColorIndex.value] = editLabel.value;
+  }
+
+  editColor.value = null;
+  editLabel.value = null;
+  arrowPosition.value = null;
+}
 </script>
 
 <template>
@@ -202,19 +243,30 @@ async function downloadPdf() {
         </div>
       </div>
 
-      <ul class="palette-list">
+      <ul class="palette-list" id="grid-list">
         <li v-for="(color, i) in palette" :key="i">
           <PaletteInput
             :color="color"
-            @color-change="onChangeColor"
-            @color-remove="onColorRemove"
+            :label="paletteLabels[i]"
+            @edit-color="openEditColor"
+            @remove-color="removeColor"
           />
         </li>
 
-        <li><PaletteInput @color-add="onAddColor" /></li>
+        <li><ColorInput @edit-color="openNewColor" /></li>
       </ul>
 
-      <BigButton @click="checkColors">Check colours</BigButton>
+      <ColorEditor
+        v-model:editColor="editColor"
+        v-model:editLabel="editLabel"
+        @cancelEditColor="cancelEditColor"
+        @saveEditColor="saveColorChanges"
+        :arrowPosition="arrowPosition"
+      />
+
+      <div class="check-btn">
+        <BigButton @click="checkColors">Check colours</BigButton>
+      </div>
     </div>
 
     <div class="page-results" id="page-results">
@@ -285,13 +337,13 @@ async function downloadPdf() {
 
 .page-colours {
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 1rem;
+  /* padding: 1rem; */
   background-color: white;
 }
 
 .page-colours-header {
   justify-content: space-between;
-  margin-bottom: 3rem;
+  margin: 1rem 1rem 3rem 1rem;
 }
 
 .page-colours-header h3 {
@@ -320,14 +372,22 @@ async function downloadPdf() {
   width: 40%;
 }
 
+.check-btn {
+  margin: 2rem 1rem 2rem 1rem;
+}
+
 .palette-list,
 .result-list ul {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding-bottom: 0;
+}
+
+.palette-list {
+  margin-inline: 1rem;
 }
 
 .no-safe-results {
@@ -441,8 +501,8 @@ async function downloadPdf() {
 }
 
 @media (min-width: 768px) {
-  .page-colours {
-    padding: 2rem;
+  .page-colours-header {
+    margin: 2rem 2rem 3rem 2rem;
   }
 
   .page-colours-header,
@@ -453,6 +513,14 @@ async function downloadPdf() {
   .palette-list,
   .result-list ul {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .palette-list {
+    margin-inline: 2rem;
+  }
+
+  .check-btn {
+    margin-inline: 2rem;
   }
 }
 

@@ -1,32 +1,25 @@
 <script setup>
 import { ref, computed } from "vue";
-import Color from "https://colorjs.io/dist/color.js";
+import Color from "colorjs.io";
 
-defineProps({
-  id: String,
+const props = defineProps({
+  color: String,
 });
 
-const color = defineModel();
-const input = ref(null);
-
-function updateColor(event) {
-  color.value = event.target.value;
-}
-
 const isEmpty = computed(() => {
-  return color.value == undefined;
+  return !props.color || props.color == "";
 });
 
 const previewColor = computed(() => {
-  if (!color.value) {
+  if (!props.color || props.color == "") {
     return "#e9e9e9";
   }
-  return color.value;
+  return props.color;
 });
 
 const textColor = computed(() => {
-  if (color.value) {
-    let color1 = new Color(color.value);
+  if (props.color) {
+    let color1 = new Color(props.color);
     let color2 = new Color("black");
     let contrast = color1.contrast(color2, "Lstar");
     if (contrast < 50) {
@@ -46,20 +39,18 @@ const textColor = computed(() => {
       <span :style="{ color: textColor }">{{ color }}</span>
     </div>
 
-    <input
-      type="color"
-      ref="input"
-      :id="id"
-      :name="id"
-      :value="previewColor"
-      @change.lazy="updateColor"
-    />
+    <div
+      class="color-preview"
+      :style="{ backgroundColor: previewColor }"
+      @click="$emit('edit-color', color)"
+    ></div>
   </div>
 </template>
 
 <style>
 .color-input {
   position: relative;
+  cursor: pointer;
 }
 
 .add-icon {
@@ -81,22 +72,11 @@ const textColor = computed(() => {
   pointer-events: none;
 }
 
-input[type="color"] {
-  border: none;
+.color-preview {
   background-color: var(--color-checker-light-grey);
   width: 100%;
   block-size: auto;
   aspect-ratio: 1/1;
   border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-input[type="color"]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-input[type="color"]::-webkit-color-swatch,
-input[type="color"]::-moz-color-swatch {
-  border: none;
 }
 </style>

@@ -1,29 +1,18 @@
 <script setup>
-import { computed, onMounted } from "vue";
-import Color from "https://colorjs.io/dist/color.js";
-
-const emit = defineEmits(["colorChange", "colorAdd", "colorRemove"]);
+import { ref, computed } from "vue";
+import Color from "colorjs.io";
 
 const props = defineProps({
-  color: {
-    type: String,
-    required: false,
-  },
+  color: String,
+  label: String,
 });
 
 const isEmpty = computed(() => {
-  return !props.color;
-});
-
-onMounted(() => {
-  if (!isEmpty) {
-    console.log("because this is new it must set the color " + props.color);
-    // previewColorModel.value = props.color;
-  }
+  return !props.color || props.color == "";
 });
 
 const previewColor = computed(() => {
-  if (!props.color) {
+  if (!props.color || props.color == "") {
     return "#e9e9e9";
   }
   return props.color;
@@ -42,59 +31,35 @@ const textColor = computed(() => {
   return "black";
 });
 
-const onInput = (event) => {
-  console.log("input");
-  // if (props.color) {
-  //   emit("colorChange", props.color, event.target.value);
-  // } else {
-  //   emit("colorAdd", event.target.value);
-  //   // clear the input
-  //   event.target.value = "#e9e9e9";
-  // }
-};
-
-const onFocusOut = (event) => {
-  if (isEmpty.value) {
-    emit("colorAdd", event.target.value);
-    // clear the input
-    event.target.value = "#e9e9e9";
-  } else {
-    emit("colorChange", props.color, event.target.value);
-  }
-};
-
-const onRemove = () => {
-  emit("colorRemove", props.color);
-};
+const textLabel = computed(() => {
+  return props.label ? props.label : props.color;
+});
 </script>
 
 <template>
-  <div class="color-input" :class="{ hidden: !props.color }">
-    <button v-if="props.color" class="remove-button" @click="onRemove">
+  <div class="color-input">
+    <button class="remove-button" @click="$emit('remove-color', color)">
       <img src="/remove-icon.svg" alt="x icon to remove a colour" />
     </button>
 
     <img v-show="isEmpty" class="add-icon" src="/add-icon.svg" alt="+ icon" />
 
     <div v-show="!isEmpty" class="hex-label">
-      <span :style="{ color: textColor }">{{ color }}</span>
+      <span :style="{ color: textColor }">{{ textLabel }}</span>
     </div>
 
-    <input
-      type="color"
-      ref="input"
-      :value="previewColor"
-      @input="onInput"
-      @focusout="onFocusOut"
-    />
+    <div
+      class="color-preview"
+      :style="{ backgroundColor: previewColor }"
+      @click="$emit('edit-color', color)"
+    ></div>
   </div>
 </template>
 
 <style>
 .color-input {
   position: relative;
-  /* border-radius: 0.5rem;
-  overflow: hidden; */
+  cursor: pointer;
 }
 
 .remove-button {
@@ -104,9 +69,6 @@ const onRemove = () => {
   border: none;
   background-color: unset;
   cursor: pointer;
-}
-
-.remove-button {
   right: 0;
   transform: translate(5px, -5px);
 }
@@ -130,57 +92,11 @@ const onRemove = () => {
   pointer-events: none;
 }
 
-input[type="color"] {
-  border: none;
+.color-preview {
   background-color: var(--color-checker-light-grey);
   width: 100%;
   block-size: auto;
   aspect-ratio: 1/1;
-}
-
-/* .color-input.hidden {
-  background-color: var(--color-checker-light-grey);
-  height: min-content;
-} */
-/* .color-input.hidden input[type="color"] {
-  opacity: 0;
-} */
-
-input[type="color"]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-input[type="color"]::-webkit-color-swatch {
-  border: none;
-}
-
-/* show that the current colour is clearly being editted */
-.color-input:focus-within input[type="color"] {
-  border: 2px solid var(--color-checker-dark-grey);
-  animation: border-pulse 2s infinite alternate;
-}
-
-.color-input:focus-within .hex-label {
-  opacity: 0.2;
-}
-
-@keyframes border-pulse {
-  0% {
-    border-color: var(--color-checker-light-grey);
-  }
-  100% {
-    border-color: var(--color-checker-dark-grey);
-  }
-}
-
-@media (hover: hover) {
-  .remove-button {
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .color-input:hover .remove-button {
-    opacity: 1;
-  }
+  border-radius: 0.5rem;
 }
 </style>

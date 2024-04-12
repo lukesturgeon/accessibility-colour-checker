@@ -12,17 +12,30 @@ const RESULT_BLOCK_SPACING = 80;
 let levelAAA = false;
 
 export default async (req, context) => {
-  // You need this if you are calling this from the browser
-  // to handle CORS preflight stuff
+  // get the origin
+  const allowList = [
+    "studionoel.co.uk",
+    "https://stgstudionoel.wpengine.com/",
+    "http://stgstudionoel.local/",
+  ];
+
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTION",
-        "Content-Type": "application/pdf",
-      },
-    });
+    // You need this if you are calling this from the browser
+    // to handle CORS preflight stuff
+
+    const headers = {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "POST, OPTION",
+      "Content-Type": "application/pdf",
+    };
+
+    const url = new URL(req.url);
+    if (allowList.indexOf(url.origin) > -1) {
+      console.log("allow");
+      headers["Access-Control-Allow-Origin"] = url.origin;
+    }
+
+    return new Response("ok", { headers: headers });
   }
 
   if (req.method != "POST" || !req.body) {
@@ -49,12 +62,18 @@ export default async (req, context) => {
 
   // Set headers
   const headers = new Headers();
-  headers.set("Access-Control-Allow-Origin", "*");
+
   headers.set("Content-Type", "application/pdf");
   headers.set(
     "Content-Disposition",
     "attachment; filename='accessible-colour-palette.pdf'"
   );
+
+  const url = new URL(req.url);
+  if (allowList.indexOf(url.origin) > -1) {
+    console.log("allow");
+    headers.set("Access-Control-Allow-Origin", url.origin);
+  }
 
   return new Response(data, {
     headers: headers,

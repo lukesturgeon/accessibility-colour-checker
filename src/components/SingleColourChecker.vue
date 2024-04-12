@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from "vue";
-import Color from "https://colorjs.io/dist/color.js";
+import { ref, isRef, unref, computed } from "vue";
+import Color from "colorjs.io";
 
 import BigButton from "../components/BigButton.vue";
 import ColorInput from "../components/ColorInput.vue";
@@ -8,23 +8,21 @@ import ContrastResultPreview from "../components/ContrastResultPreview.vue";
 import ContrastResultNum from "../components/ContrastResultNum.vue";
 import ToggleSwitch from "../components/ToggleSwitch.vue";
 import Tooltip from "../components/Tooltip.vue";
+import ColorEditor from "../components/ColorEditor.vue";
 
 const backgroundColor = ref();
 const foregroundColor = ref();
 const contrastRatio = ref(null);
 const levelAAA = ref(false);
 
+const editColor = ref();
+var editColorRef = null;
+const arrowPosition = ref();
+
 const toggleColors = () => {
   let tempForeground = foregroundColor.value;
   foregroundColor.value = backgroundColor.value;
   backgroundColor.value = tempForeground;
-};
-
-const onColorChange = () => {
-  // have we already started checking?
-  if (contrastRatio.value != undefined) {
-    checkColors();
-  }
 };
 
 const checkColors = () => {
@@ -46,14 +44,49 @@ const checkColors = () => {
 };
 
 const normalTextThreshold = computed(() => {
-  console.log("normal");
-  console.log(levelAAA.value);
   return levelAAA.value ? 7 : 4.5;
 });
 
 const largeTextThreshold = computed(() => {
   return levelAAA.value ? 4.5 : 3;
 });
+
+function editBackgroundColor() {
+  if (!backgroundColor.value) {
+    backgroundColor.value = "";
+  }
+
+  editColorRef = backgroundColor;
+  editColor.value = backgroundColor.value;
+  arrowPosition.value = "17";
+}
+
+function editForegroundColor() {
+  if (!foregroundColor.value) {
+    foregroundColor.value = "";
+  }
+
+  editColorRef = foregroundColor;
+  editColor.value = foregroundColor.value;
+  arrowPosition.value = "73";
+}
+
+function cancelEditColor() {
+  // clear the ref
+  editColor.value = null;
+  arrowPosition.value = null;
+}
+
+function updateColor(newColor) {
+  editColorRef.value = newColor;
+  editColor.value = null;
+  arrowPosition.value = null;
+
+  // have we already started checking?
+  if (contrastRatio.value != undefined) {
+    checkColors();
+  }
+}
 </script>
 
 <template>
@@ -64,46 +97,51 @@ const largeTextThreshold = computed(() => {
 
   <div class="page-content">
     <div class="page-colours">
-      <h3>Your Colours</h3>
+      <div class="page-padding">
+        <h3>Your Colours</h3>
 
-      <div class="colour-picker-container">
-        <div class="colour-picker-input">
-          <label for="backgroundcolor"><h4>Background</h4></label>
-          <ColorInput
-            id="backgroundcolor"
-            v-model="backgroundColor"
-            @change="onColorChange"
-          />
-        </div>
-        <div class="colour-picker-switch">
-          <img
-            src="/reverse-icon.svg"
-            alt="icon with two arrows facing opposite directions, to toggle"
-            @click="toggleColors"
-          />
-        </div>
-        <div class="colour-picker-input">
-          <label for="foregroundcolor"><h4>Foreground</h4></label>
-          <ColorInput
-            id="foregroundcolor"
-            v-model="foregroundColor"
-            @change="onColorChange"
-          />
+        <div class="colour-picker-container">
+          <div class="colour-picker-input">
+            <label for="backgroundcolor"><h4>Background</h4></label>
+            <ColorInput :color="backgroundColor" @click="editBackgroundColor" />
+          </div>
+          <div class="colour-picker-switch">
+            <img
+              src="/reverse-icon.svg"
+              alt="icon with two arrows facing opposite directions, to toggle"
+              @click="toggleColors"
+            />
+          </div>
+          <div class="colour-picker-input">
+            <label for="foregroundcolor"><h4>Foreground</h4></label>
+            <ColorInput :color="foregroundColor" @click="editForegroundColor" />
+          </div>
         </div>
       </div>
 
-      <div class="compliance-toggle">
-        <p class="compliance-toggle-text">
-          Choose WCAG compliance level
-          <Tooltip href="#how-to-use-our-colour-and-palette-checker"></Tooltip>
-        </p>
+      <ColorEditor
+        v-model:editColor="editColor"
+        @cancelEditColor="cancelEditColor"
+        @saveEditColor="updateColor"
+        :arrowPosition="arrowPosition"
+      />
 
-        <div class="compliance-toggle-switch">
-          <ToggleSwitch name="levelAAA" id="levelAAA" v-model="levelAAA" />
+      <div class="page-padding">
+        <div class="compliance-toggle">
+          <p class="compliance-toggle-text">
+            Choose WCAG compliance level
+            <Tooltip
+              href="#how-to-use-our-colour-and-palette-checker"
+            ></Tooltip>
+          </p>
+
+          <div class="compliance-toggle-switch">
+            <ToggleSwitch name="levelAAA" id="levelAAA" v-model="levelAAA" />
+          </div>
         </div>
-      </div>
 
-      <BigButton @click="checkColors">Check colours</BigButton>
+        <BigButton @click="checkColors">Check colours</BigButton>
+      </div>
     </div>
     <div class="page-compliance">
       <h3>{{ levelAAA ? "AAA" : "AA" }} compliant results</h3>
@@ -228,6 +266,12 @@ const largeTextThreshold = computed(() => {
   display: flex;
   flex-direction: column;
   color: black;
+  margin-bottom: 40px;
+  box-shadow: 0 0 30px;
+}
+
+.page-padding {
+  padding: 1rem;
 }
 
 /* @media (min-width: 768px) {
@@ -250,13 +294,12 @@ const largeTextThreshold = computed(() => {
 
 .page-colours {
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 1rem;
+  /* padding: 1rem; */
   background-color: white;
   text-align: center;
 }
 
 .colour-picker-container {
-  margin-bottom: 2rem;
   display: flex;
   align-items: center;
 }
@@ -270,6 +313,7 @@ h4 {
 .colour-picker-container .colour-picker-input {
   width: 40%;
   text-align: center;
+  position: relative;
 }
 
 .colour-picker-container .colour-picker-switch {
@@ -287,6 +331,7 @@ h4 {
   justify-content: space-between;
   align-items: flex-start;
   column-gap: 1rem;
+  margin-top: 2rem;
   margin-bottom: 2rem;
   text-align: left;
 }
@@ -362,7 +407,6 @@ h4 {
 }
 
 @media (min-width: 768px) {
-  .page-colours,
   .page-compliance {
     padding: 2rem;
   }
