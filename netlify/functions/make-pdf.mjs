@@ -14,9 +14,9 @@ let levelAAA = false;
 export default async (req, context) => {
   // get the origin
   const allowList = [
-    "studionoel.co.uk",
-    "https://stgstudionoel.wpengine.com/",
-    "http://stgstudionoel.local/",
+    "https://studionoel.co.uk",
+    "https://stgstudionoel.wpengine.com",
+    "http://stgstudionoel.local",
   ];
 
   if (req.method === "OPTIONS") {
@@ -70,6 +70,7 @@ export default async (req, context) => {
   );
 
   const url = new URL(req.url);
+  console.log(url.origin);
   if (allowList.indexOf(url.origin) > -1) {
     console.log("allow");
     headers.set("Access-Control-Allow-Origin", url.origin);
