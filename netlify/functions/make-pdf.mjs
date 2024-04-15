@@ -2,17 +2,10 @@ import pdfDocuments from "pdfkit";
 import getContrastResults from "../../src/color-checker.js";
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://stgstudionoel.wpengine.com",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-
-// get the origin
-const ALLOW_ORIGINS = [
-  "https://studionoel.co.uk",
-  "https://stgstudionoel.wpengine.com",
-  "http://stgstudionoel.local",
-];
 
 const PALETTE_X = 35;
 const RESULTS_X = 145;
@@ -61,11 +54,7 @@ export default async (req, context) => {
     "Content-Disposition",
     "attachment; filename='accessible-colour-palette.pdf'"
   );
-
-  const url = new URL(req.url);
-  if (ALLOW_ORIGINS.indexOf(url.origin) > -1) {
-    headers.set("Access-Control-Allow-Origin", url.origin);
-  }
+  headers.set("Access-Control-Allow-Origin", "*");
 
   return new Response(data, {
     headers: headers,
