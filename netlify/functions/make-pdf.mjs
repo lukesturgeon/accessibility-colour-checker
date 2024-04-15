@@ -62,12 +62,10 @@ export default async (req, context) => {
     "attachment; filename='accessible-colour-palette.pdf'"
   );
 
-  // const url = new URL(req.url);
-  // console.log(url.origin);
-  // if (ALLOW_ORIGINS.indexOf(url.origin) > -1) {
-  //   console.log("allow");
-  //   headers.set("Access-Control-Allow-Origin", url.origin);
-  // }
+  const url = new URL(req.url);
+  if (ALLOW_ORIGINS.indexOf(url.origin) > -1) {
+    headers.set("Access-Control-Allow-Origin", url.origin);
+  }
 
   return new Response(data, {
     headers: headers,
