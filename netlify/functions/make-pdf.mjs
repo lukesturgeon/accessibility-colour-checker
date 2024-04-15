@@ -1,6 +1,19 @@
 import pdfDocuments from "pdfkit";
 import getContrastResults from "../../src/color-checker.js";
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "https://stgstudionoel.wpengine.com",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+// get the origin
+const ALLOW_ORIGINS = [
+  "https://studionoel.co.uk",
+  "https://stgstudionoel.wpengine.com",
+  "http://stgstudionoel.local",
+];
+
 const PALETTE_X = 35;
 const RESULTS_X = 145;
 const RESULTS_MAX_COLS = 6;
@@ -12,30 +25,10 @@ const RESULT_BLOCK_SPACING = 80;
 let levelAAA = false;
 
 export default async (req, context) => {
-  // get the origin
-  const allowList = [
-    "https://studionoel.co.uk",
-    "https://stgstudionoel.wpengine.com",
-    "http://stgstudionoel.local",
-  ];
-
   if (req.method === "OPTIONS") {
     // You need this if you are calling this from the browser
     // to handle CORS preflight stuff
-
-    const headers = {
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Allow-Methods": "POST, OPTION",
-      "Content-Type": "application/pdf",
-    };
-
-    const url = new URL(req.url);
-    if (allowList.indexOf(url.origin) > -1) {
-      console.log("allow");
-      headers["Access-Control-Allow-Origin"] = url.origin;
-    }
-
-    return new Response("ok", { headers: headers });
+    return new Response("ready", { headers: CORS_HEADERS });
   }
 
   if (req.method != "POST" || !req.body) {
@@ -69,12 +62,12 @@ export default async (req, context) => {
     "attachment; filename='accessible-colour-palette.pdf'"
   );
 
-  const url = new URL(req.url);
-  console.log(url.origin);
-  if (allowList.indexOf(url.origin) > -1) {
-    console.log("allow");
-    headers.set("Access-Control-Allow-Origin", url.origin);
-  }
+  // const url = new URL(req.url);
+  // console.log(url.origin);
+  // if (ALLOW_ORIGINS.indexOf(url.origin) > -1) {
+  //   console.log("allow");
+  //   headers.set("Access-Control-Allow-Origin", url.origin);
+  // }
 
   return new Response(data, {
     headers: headers,
