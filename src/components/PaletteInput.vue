@@ -45,7 +45,13 @@ const textLabel = computed(() => {
     <img v-show="isEmpty" class="add-icon" src="/add-icon.svg" alt="+ icon" />
 
     <div v-show="!isEmpty" class="hex-label">
-      <span :style="{ color: textColor }">{{ textLabel }}</span>
+      <span class="text-label" :style="{ color: textColor }">{{ label }}</span>
+      <span
+        class="text-color"
+        :class="{ small: label }"
+        :style="{ color: textColor }"
+        >{{ color }}</span
+      >
     </div>
 
     <div
@@ -87,9 +93,26 @@ const textLabel = computed(() => {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.hex-label .text-label {
+  display: block;
+}
+
+.hex-label .text-color.small {
+  font-size: 0.7em;
+}
+
+.hex-label .text-color.small::before {
+  content: "(";
+}
+
+.hex-label .text-color.small::after {
+  content: ")";
 }
 
 .color-preview {

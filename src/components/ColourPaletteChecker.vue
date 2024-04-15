@@ -287,10 +287,13 @@ function saveColorChanges(newColor) {
 
         <ul class="result-list">
           <li
-            v-for="backgroundColor in resultsMatrix"
+            v-for="(backgroundColor, i) in resultsMatrix"
             :key="backgroundColor.color"
           >
-            <h4>{{ backgroundColor.color }}</h4>
+            <h4>
+              {{ backgroundColor.color }}
+              <span v-if="paletteLabels[i]">({{ paletteLabels[i] }})</span>
+            </h4>
 
             <ul v-if="backgroundColor.results.length > 0">
               <li

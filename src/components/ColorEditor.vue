@@ -185,55 +185,59 @@ function saveEditColor() {
         />
       </fieldset>
 
-      <fieldset name="srgb">
-        <span>
-          <label for="red">R</label>
-          <input
-            type="number"
-            id="red"
-            name="red"
-            min="0"
-            max="255"
-            :value="srgbPreview[0]"
-            @change.lazy="setRed"
-        /></span>
+      <div class="srgb-hex-columms">
+        <fieldset name="srgb">
+          <span>
+            <label for="red">R</label>
+            <input
+              type="number"
+              id="red"
+              name="red"
+              min="0"
+              max="255"
+              :value="srgbPreview[0]"
+              @change.lazy="setRed"
+          /></span>
 
-        <span>
-          <label for="green">G</label>
-          <input
-            type="number"
-            id="green"
-            name="green"
-            min="0"
-            max="255"
-            :value="srgbPreview[1]"
-            @change.lazy="setGreen"
-        /></span>
+          <span>
+            <label for="green">G</label>
+            <input
+              type="number"
+              id="green"
+              name="green"
+              min="0"
+              max="255"
+              :value="srgbPreview[1]"
+              @change.lazy="setGreen"
+          /></span>
 
-        <span>
-          <label for="blue">B</label>
-          <input
-            type="number"
-            id="blue"
-            name="blue"
-            min="0"
-            max="255"
-            :value="srgbPreview[2]"
-            @change.lazy="setBlue"
-        /></span>
+          <span>
+            <label for="blue">B</label>
+            <input
+              type="number"
+              id="blue"
+              name="blue"
+              min="0"
+              max="255"
+              :value="srgbPreview[2]"
+              @change.lazy="setBlue"
+          /></span>
+        </fieldset>
 
-        <span
-          ><label for="hex">Hex</label>
-          <input
-            type="text"
-            id="hex"
-            name="hex"
-            pattern="/^#([0-9a-f]{6}|[0-9a-f]{3})$/i"
-            :value="hexPreview"
-            maxlength="7"
-            @change.lazy="setHex"
-        /></span>
-      </fieldset>
+        <fieldset name="hex">
+          <span class="hex-input-span"
+            ><label for="hex">Hex</label>
+            <input
+              type="text"
+              id="hex"
+              name="hex"
+              pattern="/^#([0-9a-f]{6}|[0-9a-f]{3})$/i"
+              :value="hexPreview"
+              maxlength="7"
+              @change.lazy="setHex"
+          /></span>
+        </fieldset>
+      </div>
 
       <fieldset v-if="canEditName" name="rename">
         <label for="name">Name Colour</label>
@@ -261,9 +265,6 @@ function saveEditColor() {
   position: absolute;
   left: 0;
   height: 20px;
-}
-
-.color-editor {
 }
 
 .color-editor-content {
@@ -371,18 +372,48 @@ button[type="submit"]:hover {
 
 /* specialist layout */
 
+.srgb-hex-columms {
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 fieldset[name="srgb"] {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  column-gap: 1rem;
+}
+
+fieldset[name="srgb"] span {
+  flex-grow: 1;
+}
+
+fieldset[name="hex"] {
+  width: 100%;
+}
+
+/* fieldset[name="srgb"] {
+  display: flex;
   column-gap: 1rem;
   margin-bottom: 1rem;
 }
 
-fieldset[name="srgb"] span {
+.srgb-fields {
+  display: flex;
+  column-gap: 1rem;
+  width: 50%;
+} */
+
+/* fieldset[name="srgb"] span {
   text-align: center;
-}
+} */
 
 fieldset[name="rename"] {
   margin-bottom: 1rem;
+}
+
+@media (min-width: 480px) {
+  .srgb-hex-columms {
+    display: flex;
+  }
 }
 </style>
