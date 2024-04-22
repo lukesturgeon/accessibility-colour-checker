@@ -9,13 +9,16 @@ import Tooltip from "../components/Tooltip.vue";
 import ColorEditor from "./ColorEditor.vue";
 import PaletteInput from "./PaletteInput.vue";
 
+const EXPORT_BTN_TEXT = "Export palette as PDF";
+const CREATING_BTN_TEXT = "Creating PDF…";
+
 const palette = shallowReactive([]);
 const paletteLabels = shallowReactive([]);
 
 const levelAAA = ref(false);
 const showResults = ref(false);
 const filterResults = ref("all");
-const downloadBtn = ref(null);
+const downloadBtnText = ref(EXPORT_BTN_TEXT);
 
 // For the colour editor panel
 const editColorIndex = ref(-1);
@@ -44,9 +47,7 @@ const removeColor = (oldColor) => {
 
   // if found do an update
   if (i > -1) {
-    if (confirm("Remove this colour?")) {
-      palette.splice(i, 1);
-    }
+    palette.splice(i, 1);
   }
 };
 
@@ -126,13 +127,13 @@ const resultsMatrix = computed(() => {
 });
 
 async function downloadPdf() {
-  // show loading gif on the button
-  downloadBtn.value.classList.add("loading");
+  downloadBtnText.value = CREATING_BTN_TEXT;
 
-  const apiBase = import.meta.env.VITE_API_BASE;
   const functionBase = "/.netlify/functions/make-pdf";
 
-  const url = apiBase ? apiBase + functionBase : functionBase;
+  const url = import.meta.env.PROD
+    ? "https://accessibility-colour-checker.netlify.app" + functionBase
+    : functionBase;
 
   const options = {
     method: "POST", // or 'PUT'
@@ -154,13 +155,32 @@ async function downloadPdf() {
       return res.blob();
     })
     .then((blob) => {
-      // reset button
-      // show loading gif on the button
-      downloadBtn.value.classList.remove("loading");
-
+      downloadBtnText.value = EXPORT_BTN_TEXT;
       // open pdf
-      var file = window.URL.createObjectURL(blob);
-      window.open(file);
+      // var file = window.URL.createObjectURL(blob);
+      // window.open(file, "_blank", "name=value");
+
+      var filename = "accessible-colour-palette-WCAG-";
+      filename += levelAAA.value ? "AAA" : "AA";
+      filename += ".pdf";
+
+      //Check the Browser type and download the File.
+      var isIE = false || !!document.documentMode;
+      if (isIE) {
+        window.navigator.msSaveBlob(blob);
+      } else {
+        var url = window.URL || window.webkitURL;
+        var link = url.createObjectURL(blob);
+        // window.open(link, "_blank");
+        var aDom = document.createElement("a");
+        aDom.setAttribute("style", "display:none");
+        aDom.setAttribute("href", link);
+        aDom.setAttribute("download", filename);
+        document.body.appendChild(aDom);
+        aDom.click();
+        URL.revokeObjectURL(link);
+        document.body.removeChild(aDom);
+      }
     })
 
     .catch((error) => {
@@ -293,8 +313,10 @@ function saveColorChanges(newColor) {
             :key="backgroundColor.color"
           >
             <h4>
-              {{ backgroundColor.color }}
-              <span v-if="paletteLabels[i]">({{ paletteLabels[i] }})</span>
+              <span v-if="paletteLabels[i]">
+                {{ paletteLabels[i] }} ({{ backgroundColor.color }})</span
+              >
+              <span v-else>{{ backgroundColor.color }}</span>
             </h4>
 
             <ul v-if="backgroundColor.results.length > 0">
@@ -327,11 +349,7 @@ function saveColorChanges(newColor) {
         </ul>
 
         <div class="export">
-          <span>Export palette</span>
-          <a class="download-btn" ref="downloadBtn" @click="downloadPdf()"
-            ><span>.pdf</span
-            ><img src="/loading.gif" alt="loading spinner animation"
-          /></a>
+          <BigButton @click="downloadPdf()">{{ downloadBtnText }}</BigButton>
         </div>
       </div>
     </div>

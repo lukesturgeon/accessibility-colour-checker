@@ -191,6 +191,7 @@ function updateColor(newColor) {
           :threshold="largeTextThreshold"
         >
           <svg
+            class="preview-icons"
             width="163px"
             height="36px"
             viewBox="0 0 163 36"
@@ -376,6 +377,10 @@ h4 {
   width: 75%;
   max-width: 40ch;
   margin-inline: auto;
+}
+
+.preview-icons {
+  width: 100%;
 }
 
 #preview-icons path,

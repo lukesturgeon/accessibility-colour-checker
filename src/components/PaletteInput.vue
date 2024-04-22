@@ -101,6 +101,8 @@ const textLabel = computed(() => {
 
 .hex-label .text-label {
   display: block;
+  text-align: center;
+  padding-inline: 0.5em;
 }
 
 .hex-label .text-color.small {

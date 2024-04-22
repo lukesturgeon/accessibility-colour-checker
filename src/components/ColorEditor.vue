@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import Color from "colorjs.io";
+import colorString from "color-string";
 
 const editColor = defineModel("editColor");
 const editName = defineModel("editLabel");
@@ -85,8 +86,10 @@ const hexPreview = computed(() => {
   let color = new Color("hsl", [hsl.value[0], hsl.value[1], hsl.value[2]]).to(
     "srgb"
   );
-
-  return color.toString({ format: "hex" });
+  const r = color.r * 255;
+  const g = color.g * 255;
+  const b = color.b * 255;
+  return colorString.to.hex([r, g, b]);
 });
 
 function setRed(event) {
@@ -129,7 +132,11 @@ function saveEditColor() {
     "srgb"
   );
 
-  emit("saveEditColor", color.toString({ format: "hex" }));
+  const r = color.r * 255;
+  const g = color.g * 255;
+  const b = color.b * 255;
+
+  emit("saveEditColor", colorString.to.hex([r, g, b]));
 }
 </script>
 
@@ -350,6 +357,7 @@ button {
   font-family: inherit;
   background: var(--color-checker-grey);
   border: 2px solid var(--color-checker-grey);
+  color: black;
   padding: 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -363,6 +371,7 @@ button:hover {
 button[type="submit"] {
   background-color: white;
   border-color: white;
+  color: black;
 }
 
 button[type="submit"]:hover {
