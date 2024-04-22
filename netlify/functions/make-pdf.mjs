@@ -11,9 +11,10 @@ const PALETTE_X = 35;
 const RESULTS_X = 145;
 const RESULTS_MAX_COLS = 6;
 const RESULTS_MAX_ROWS = 6;
+
 const RESULT_SIZE = 60;
 const RESULT_INLINE_SPACING = 72;
-const RESULT_BLOCK_SPACING = 80;
+const RESULT_BLOCK_SPACING = 72;
 
 let levelAAA = false;
 
@@ -48,12 +49,7 @@ export default async (req, context) => {
 
   // Set headers
   const headers = new Headers();
-
   headers.set("Content-Type", "application/pdf");
-  headers.set(
-    "Content-Disposition",
-    "attachment; filename='accessible-colour-palette.pdf'"
-  );
   headers.set("Access-Control-Allow-Origin", "*");
 
   return new Response(data, {
@@ -69,7 +65,11 @@ const makePDF = async (colors) => {
       margin: 0,
       font: "./netlify/functions/fonts/GT-America-Regular.otf",
       info: {
-        Title: "Accessible Colour Palette",
+        Title:
+          "Accessible Colour Palette" +
+          " (WCAG " +
+          (levelAAA ? "AAA" : "AA") +
+          ")",
         Author: "Studio Noel",
       },
     });
@@ -104,7 +104,8 @@ const makePDF = async (colors) => {
         return r.result != "not-safe";
       }).length;
 
-      const rowsNeeded = Math.ceil(safeResults / RESULTS_MAX_COLS);
+      // calculate how many rows, should always be at least 1
+      const rowsNeeded = Math.max(1, Math.ceil(safeResults / RESULTS_MAX_COLS));
 
       if (rowsAvailableOnPage >= rowsNeeded) {
         // add to existing page
@@ -208,7 +209,7 @@ function addPageHeader(doc) {
 
 function addPageContent(doc, colors) {
   doc.font("GT-Bold");
-  doc.fontSize(11);
+  doc.fontSize(10);
   doc.text("Palette tested", PALETTE_X, 207);
   doc.text(
     (levelAAA ? "AAA" : "AA") + " compliant text colour combinations",
@@ -261,10 +262,24 @@ function addPageContent(doc, colors) {
       // compliant result
       doc.font("GT-Light");
       doc.fill("#000000");
-      doc.text(result.label, x, y + RESULT_SIZE, {
-        width: RESULT_SIZE,
+      doc.text(result.label, x + 8, y + RESULT_SIZE, {
+        width: RESULT_SIZE - 8,
         align: "center",
       });
+
+      if (result.result == "safe") {
+        doc.image(
+          "./netlify/functions/images/safe.jpeg",
+          x,
+          y + RESULT_SIZE + 3
+        );
+      } else {
+        doc.image(
+          "./netlify/functions/images/large-only.jpeg",
+          x,
+          y + RESULT_SIZE + 3
+        );
+      }
 
       x += RESULT_INLINE_SPACING;
       num_safe_results++;
@@ -294,8 +309,19 @@ function addPageContent(doc, colors) {
 function addPageFooter(doc) {
   doc.rect(0, 785, 595, 60).fill("#FEF1E3");
 
-  doc.font("GT-Bold");
+  doc.font("GT-Regular");
   doc.fontSize(9);
   doc.fill("#000000");
-  doc.text("studionoel.co.uk", 464, 811, { width: 114, align: "right" });
+  doc.text(
+    "Accessible colour palette checker by                        and                          ",
+    0,
+    808,
+    { width: 595, align: "center" }
+  );
+
+  doc.font("GT-Bold");
+  doc.text("Studio Noel          Luke Sturgeon", 309, 808);
+
+  doc.link(308, 804, 58, 20, "https://studionoel.co.uk/");
+  doc.link(381, 804, 65, 20, "https://lukesturgeon.co.uk/");
 }
