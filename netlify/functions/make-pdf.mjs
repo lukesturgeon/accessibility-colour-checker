@@ -262,24 +262,10 @@ function addPageContent(doc, colors) {
       // compliant result
       doc.font("GT-Light");
       doc.fill("#000000");
-      doc.text(result.label, x + 8, y + RESULT_SIZE, {
-        width: RESULT_SIZE - 8,
+      doc.text(result.label, x, y + RESULT_SIZE, {
+        width: RESULT_SIZE,
         align: "center",
       });
-
-      if (result.result == "safe") {
-        doc.image(
-          "./netlify/functions/images/safe.jpeg",
-          x,
-          y + RESULT_SIZE + 3
-        );
-      } else {
-        doc.image(
-          "./netlify/functions/images/large-only.jpeg",
-          x,
-          y + RESULT_SIZE + 3
-        );
-      }
 
       x += RESULT_INLINE_SPACING;
       num_safe_results++;
