@@ -107,7 +107,7 @@ function updateColor(newColor) {
           </div>
           <div class="colour-picker-switch">
             <img
-              src="/reverse-icon.svg"
+              src="/colour-checker/reverse-icon.svg"
               alt="icon with two arrows facing opposite directions, to toggle"
               @click="toggleColors"
             />

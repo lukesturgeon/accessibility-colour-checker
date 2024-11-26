@@ -10,6 +10,8 @@ const components = {
   single: SingleColourChecker,
   palette: ColourPaletteChecker,
 };
+
+console.log('Colour Checker v1.0.0');
 </script>
 
 <template>
