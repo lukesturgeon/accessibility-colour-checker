@@ -478,17 +478,17 @@ function saveColorChanges(newColor) {
 
 .safe .result-list-score::before {
   margin-top: 2px;
-  content: url("/safe-icon.svg");
+  content: url("/colour-checker/safe-icon.svg");
 }
 
 .large-only .result-list-score::before {
   padding-left: 4px;
-  content: url("/large-only-icon.svg");
+  content: url("/colour-checker/large-only-icon.svg");
 }
 
 .not-safe .result-list-score::before {
   margin-top: 2px;
-  content: url("/not-safe-icon.svg");
+  content: url("/colour-checker/not-safe-icon.svg");
 }
 
 .export {

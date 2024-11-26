@@ -107,7 +107,7 @@ function updateColor(newColor) {
           </div>
           <div class="colour-picker-switch">
             <img
-              src="/reverse-icon.svg"
+              src="/colour-checker/reverse-icon.svg"
               alt="icon with two arrows facing opposite directions, to toggle"
               @click="toggleColors"
             />
@@ -166,7 +166,7 @@ function updateColor(newColor) {
           :ratio="contrastRatio"
           :threshold="normalTextThreshold"
           ><span style="font-size: small"
-            >This is how your foreground colourwill appear with normal
+            >This is how your foreground colour will appear with normal
             text</span
           ></ContrastResultPreview
         >

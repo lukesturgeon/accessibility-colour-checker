@@ -146,7 +146,7 @@ function saveEditColor() {
       <img
         class="triangle-icon"
         :style="{ left: arrowPosition + '%' }"
-        src="/triangle-icon.svg"
+        src="/colour-checker/triangle-icon.svg"
         alt="traingle icon pointing up"
       />
     </div>

@@ -25,11 +25,11 @@ defineProps({
       </div>
       <div class="result">
         <span v-show="ratio >= threshold"
-          ><img src="/safe-icon.svg" alt="tick icon" />Good contrast</span
+          ><img src="/colour-checker/safe-icon.svg" alt="tick icon" />Good contrast</span
         >
 
         <span v-show="ratio < threshold"
-          ><img src="/not-safe-icon.svg" alt="cross icon" />Bad contrast</span
+          ><img src="/colour-checker/not-safe-icon.svg" alt="cross icon" />Bad contrast</span
         >
       </div>
     </div>

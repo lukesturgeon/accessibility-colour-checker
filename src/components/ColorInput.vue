@@ -33,7 +33,7 @@ const textColor = computed(() => {
 
 <template>
   <div class="color-input">
-    <img v-show="isEmpty" class="add-icon" src="/add-icon.svg" alt="+ icon" />
+    <img v-show="isEmpty" class="add-icon" src="/colour-checker/add-icon.svg" alt="+ icon" />
 
     <div v-show="!isEmpty" class="hex-label">
       <span :style="{ color: textColor }">{{ color }}</span>

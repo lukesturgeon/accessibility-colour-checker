@@ -39,10 +39,10 @@ const textLabel = computed(() => {
 <template>
   <div class="color-input">
     <button class="remove-button" @click="$emit('remove-color', color)">
-      <img src="/remove-icon.svg" alt="x icon to remove a colour" />
+      <img src="/colour-checker/remove-icon.svg" alt="x icon to remove a colour" />
     </button>
 
-    <img v-show="isEmpty" class="add-icon" src="/add-icon.svg" alt="+ icon" />
+    <img v-show="isEmpty" class="add-icon" src="/colour-checker/add-icon.svg" alt="+ icon" />
 
     <div v-show="!isEmpty" class="hex-label">
       <span class="text-label" :style="{ color: textColor }">{{ label }}</span>
