@@ -166,7 +166,7 @@ function updateColor(newColor) {
           :ratio="contrastRatio"
           :threshold="normalTextThreshold"
           ><span style="font-size: small"
-            >This is how your foreground colourwill appear with normal
+            >This is how your foreground colour will appear with normal
             text</span
           ></ContrastResultPreview
         >
