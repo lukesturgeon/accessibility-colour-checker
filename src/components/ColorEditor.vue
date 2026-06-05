@@ -83,13 +83,7 @@ const srgbPreview = computed(() => {
 });
 
 const hexPreview = computed(() => {
-  let color = new Color("hsl", [hsl.value[0], hsl.value[1], hsl.value[2]]).to(
-    "srgb"
-  );
-  const r = color.r * 255;
-  const g = color.g * 255;
-  const b = color.b * 255;
-  return colorString.to.hex([r, g, b]);
+  return colorString.to.hex(...srgbPreview.value);
 });
 
 function setRed(event) {
@@ -128,15 +122,7 @@ function cancelEditColor() {
 }
 
 function saveEditColor() {
-  let color = new Color("hsl", [hsl.value[0], hsl.value[1], hsl.value[2]]).to(
-    "srgb"
-  );
-
-  const r = color.r * 255;
-  const g = color.g * 255;
-  const b = color.b * 255;
-
-  emit("saveEditColor", colorString.to.hex([r, g, b]));
+  emit("saveEditColor", colorString.to.hex(...srgbPreview.value));
 }
 </script>
 
