@@ -16,8 +16,6 @@ const RESULT_SIZE = 60;
 const RESULT_INLINE_SPACING = 72;
 const RESULT_BLOCK_SPACING = 72;
 
-let levelAAA = false;
-
 export default async (req, context) => {
   if (req.method === "OPTIONS") {
     // You need this if you are calling this from the browser
@@ -35,9 +33,7 @@ export default async (req, context) => {
     return new Response("No palette was received", { status: 400 });
   }
 
-  if (body.levelAAA) {
-    levelAAA = body.levelAAA;
-  }
+  const levelAAA = body.levelAAA ?? false;
 
   // get the palette and test
   const results = getContrastResults(body.palette, levelAAA);
