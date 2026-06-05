@@ -39,7 +39,7 @@ export default async (req, context) => {
   const results = getContrastResults(body.palette, levelAAA);
 
   // build pdf
-  const data = await makePDF(results);
+  const data = await makePDF(results, levelAAA);
 
   // create a valid response
 
@@ -53,7 +53,7 @@ export default async (req, context) => {
   });
 };
 
-const makePDF = async (colors) => {
+const makePDF = async (colors, levelAAA) => {
   return new Promise((resolve) => {
     const doc = new pdfDocuments({
       autoFirstPage: false,
@@ -124,10 +124,10 @@ const makePDF = async (colors) => {
       doc.addPage({ size: "A4", margin: 0 });
 
       // HEADER
-      addPageHeader(doc);
+      addPageHeader(doc, levelAAA);
 
       // CONTENT
-      addPageContent(doc, pageColorArr[p]);
+      addPageContent(doc, pageColorArr[p], levelAAA);
 
       // FOOTER
       addPageFooter(doc);
@@ -143,7 +143,7 @@ const makePDF = async (colors) => {
   });
 };
 
-function addPageHeader(doc) {
+function addPageHeader(doc, levelAAA) {
   doc.rect(0, 0, 595, 186).fill("#3472D8");
 
   //
@@ -203,7 +203,7 @@ function addPageHeader(doc) {
   );
 }
 
-function addPageContent(doc, colors) {
+function addPageContent(doc, colors, levelAAA) {
   doc.font("GT-Bold");
   doc.fontSize(10);
   doc.text("Palette tested", PALETTE_X, 207);
